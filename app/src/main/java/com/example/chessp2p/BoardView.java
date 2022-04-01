@@ -7,53 +7,37 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.content.res.AppCompatResources;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 
 
-/**
- * TODO: document your custom view class.
- */
+// TODO: document your custom view class
 public class BoardView extends View implements View.OnTouchListener {
-    public enum Chess {
-        WP, WR, WN, WB, WQ, WK,
-        BP, BR, BN, BB, BQ, BK,
-        EM
-    } 
-    
-    public static Chess[][] startingBoard = {
-        {Chess.BR, Chess.BN, Chess.BB, Chess.BQ, Chess.BK, Chess.BB, Chess.BN, Chess.BR},
-        {Chess.BP, Chess.BP, Chess.BP, Chess.BP, Chess.BP, Chess.BP, Chess.BP, Chess.BP},
-        {Chess.EM, Chess.EM, Chess.EM, Chess.EM, Chess.EM, Chess.EM, Chess.EM, Chess.EM},
-        {Chess.EM, Chess.EM, Chess.EM, Chess.EM, Chess.EM, Chess.EM, Chess.EM, Chess.EM},
-        {Chess.EM, Chess.EM, Chess.EM, Chess.EM, Chess.EM, Chess.EM, Chess.EM, Chess.EM},
-        {Chess.EM, Chess.EM, Chess.EM, Chess.EM, Chess.EM, Chess.EM, Chess.EM, Chess.EM},
-        {Chess.WP, Chess.WP, Chess.WP, Chess.WP, Chess.WP, Chess.WP, Chess.WP, Chess.WP},
-        {Chess.WR, Chess.WN, Chess.WB, Chess.WQ, Chess.WK, Chess.WB, Chess.WN, Chess.WR}
-    };
+    ChessBoard board;
 
     Map<Chess, Bitmap> iconMap;
     Bitmap grayCircle, hollowSquare;
+
     int canvasSize;
+    Canvas canvas;
 
     // Destination for Canvas.drawBitmap()
     Rect dest = new Rect();
-    Canvas canvas;
 
-    // Board states
-    Chess[][] boardInfo;
     Integer chosenX = null, chosenY = null;
     Integer cursorX = null, cursorY = null;
 
     public BoardView(Context context) {
         super(context);
-
         init(context);
     }
 
@@ -66,8 +50,6 @@ public class BoardView extends View implements View.OnTouchListener {
     void init(@NonNull Context context) {
         //TypedArray tArr = context.getTheme().obtainStyledAttributes(attrSet, R.styleable.BoardView, Chess.EM, 0);
         //tArr.recycle();
-
-        boardInfo = startingBoard;
 
         iconMap = new HashMap<>();
         Resources resource = context.getResources();
@@ -101,35 +83,32 @@ public class BoardView extends View implements View.OnTouchListener {
         this.canvas = canvas;
 
         // Draw the chess pieces;
-        for (int i = 0; i < 8; i++)
-            for (int j = 0; j < 8; j++)
-                if (Chess.EM != boardInfo[i][j]) {
+        for (int i = 0; i < 8; ++i)
+            for (int j = 0; j < 8; ++j)
+                if (Chess.EM != board.getPiece(i, j)) {
                     // The canvas coordinate is column-row instead of row-column
-                    draw(iconMap.get(boardInfo[i][j]), j, i, 0);
+                    draw(iconMap.get(board.getPiece(i, j)), i, j, 0);
                 }
 
         // Draw the square and circle
         if (cursorX != null) {
             draw(hollowSquare, cursorX, cursorY, -5);
-            switch (boardInfo[cursorY][cursorX]) {
-                case BP:
-                    draw(grayCircle, cursorX, cursorY + 1, 50);
-                    if (cursorY == 1)
-                        draw(grayCircle, cursorX, cursorY + 2, 50);
-                    break;
-                case WP:
-                    draw(grayCircle, cursorX, cursorY - 1, 50);
-                    if (cursorY == 6)
-                        draw(grayCircle, cursorX, cursorY - 2, 50);
-                    break;
-            }
+        }
+        if (chosenX != null) {
+            for (int i = 0; i < 8; ++i)
+                for (int j = 0; j < 8; ++j)
+                    if (board.isValidMove(i, j)) {
+                        // The canvas coordinate is column-row instead of row-column
+                        draw(grayCircle, i, j, 40);
+                    }
         }
     }
 
     void draw(Bitmap bitmap, int x, int y, int pad) {
         x *= canvasSize;
         y *= canvasSize;
-        dest.set(x + pad, y + pad, x + canvasSize - pad, y + canvasSize - pad);
+        // The canvas coordinate is column-row instead of row-column
+        dest.set(y + pad, x + pad, y + canvasSize - pad, x + canvasSize - pad);
         canvas.drawBitmap(bitmap, null, dest, null);
     }
 
@@ -140,21 +119,6 @@ public class BoardView extends View implements View.OnTouchListener {
         setMeasuredDimension(size, size);
     }
 
-    /**
-     * Forcefully move a piece from a non-empty square to a new position. Any piece in the targeted square will be captured
-     * @param row row of the moving piece
-     * @param col column of the moving piece
-     * @param newRow row of the new position
-     * @param newCol column of the new position
-     */
-    public void movePiece(int row, int col, int newRow, int newCol) {
-        if (Chess.EM == boardInfo[row][col] || (newRow == row && newCol == col))
-            return;
-        boardInfo[newRow][newCol] = boardInfo[row][col];
-        boardInfo[row][col] = Chess.EM;
-        invalidate();
-    }
-
     @Override
     public boolean performClick() {
         return super.performClick();
@@ -163,21 +127,24 @@ public class BoardView extends View implements View.OnTouchListener {
     @Override
     public boolean onTouch(View view, MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_UP) {
-            cursorX = (int)event.getX() / canvasSize;
-            cursorY = (int)event.getY() / canvasSize;
+            // The canvas coordinate system is column-row instead of row-column
+            cursorY = (int)event.getX() / canvasSize;
+            cursorX = (int)event.getY() / canvasSize;
 
             if (chosenX != null) {
-                movePiece(chosenY, chosenX, cursorY, cursorX);
+                // Cast Integer to int to compare values instead of addresses
+                if ((chosenX != (int)cursorX || chosenY != (int)cursorY) && board.isValidMove(cursorX, cursorY)) {
+                    board.movePiece(chosenX, chosenY, cursorX, cursorY);
+                    invalidate();
+                }
                 chosenX = null;
                 chosenY = null;
-                cursorX = null;
-                cursorY = null;
             }
-            else if (boardInfo[cursorY][cursorX] != Chess.EM) {
+            else if (board.getPiece(cursorX, cursorY) != Chess.EM) {
                 chosenX = cursorX;
                 chosenY = cursorY;
+                board.setChosen(cursorX, cursorY);
             }
-
             invalidate();
         }
 
