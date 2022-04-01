@@ -1,5 +1,7 @@
 package com.example.chessp2p;
 
+import android.util.Log;
+
 import java.util.Arrays;
 import java.util.function.Function;
 
@@ -21,6 +23,8 @@ public class ChessBoard {
     // Board states
     Chess[][] boardInfo;
     boolean[][] validMap = new boolean[8][8]; // An array that represent valid move of the chosen piece
+    int chosenX, chosenY;
+    boolean hasChosen = false;
 
     ChessBoard() {
         boardInfo = Arrays.copyOf(startingBoard, startingBoard.length);
@@ -40,15 +44,34 @@ public class ChessBoard {
                 ar[i] = false;
     }
 
-    public void setChosen(int x, int y) {
+    public boolean hasChosen() {
+        return hasChosen && boardInfo[chosenX][chosenY] != Chess.EM;
+    }
+
+    /**
+     * Remove chosen status.
+     * Make hasChosen() return false
+     */
+    public void removeChosen() {
         resetValidMap();
+        hasChosen = false;
+    }
+
+    public void setChosen(int x, int y) {
+        if (boardInfo[x][y] == Chess.EM)
+            return;
+
+        chosenX = x;
+        chosenY = y;
+        hasChosen = true;
+
         Chess piece = boardInfo[x][y];
         switch (boardInfo[x][y]) {
             case BP:
                 // TODO: Black en-passant
-                if (y > 0 && x < 7 && piece.sameColor(boardInfo[x + 1][y - 1]))
+                if (y > 0 && x < 7 && piece.differentColor(boardInfo[x + 1][y - 1]))
                     validMap[x + 1][y - 1] = true;
-                if (y < 7 && x < 7 && piece.sameColor(boardInfo[x + 1][y + 1]))
+                if (y < 7 && x < 7 && piece.differentColor(boardInfo[x + 1][y + 1]))
                     validMap[x + 1][y + 1] = true;
                 if (x < 7 && boardInfo[x + 1][y] == Chess.EM)
                     validMap[x + 1][y] = true;
@@ -56,12 +79,10 @@ public class ChessBoard {
                     validMap[x + 2][y] = true;
                 break;
             case WP:
-                /*
-                  TODO: White en-passant
-                 */
-                if (y > 0 && x > 0 && piece.sameColor(boardInfo[x - 1][y - 1]))
+                // TODO: White en-passant
+                if (y > 0 && x > 0 && piece.differentColor(boardInfo[x - 1][y - 1]))
                     validMap[x - 1][y - 1] = true;
-                if (y < 7 && x > 0 && piece.sameColor(boardInfo[x - 1][y + 1]))
+                if (y < 7 && x > 0 && piece.differentColor(boardInfo[x - 1][y + 1]))
                     validMap[x - 1][y + 1] = true;
                 if (x > 0 && boardInfo[x - 1][y] == Chess.EM)
                     validMap[x - 1][y] = true;
@@ -74,8 +95,8 @@ public class ChessBoard {
                 break;
             case BN:
             case WN:
-                for (int[] ints : knightMove) {
-                    int x2 = x + ints[0], y2 = y + ints[1];
+                for (int[] move : knightMove) {
+                    int x2 = x + move[0], y2 = y + move[1];
                     if (x2 < 8 && x2 > -1 && y2 < 8 && y2 > -1 && !piece.sameColor(boardInfo[x2][y2]))
                         validMap[x2][y2] = true;
                 }
@@ -83,10 +104,13 @@ public class ChessBoard {
             case BB:
             case WB:
                 setValidBishop(x, y);
+                break;
             case BK:
+                // TODO: Add black castling
             case WK:
-                for (int[] ints : kingMove) {
-                    int x2 = x + ints[0], y2 = y + ints[1];
+                // TODO: Add white castling
+                for (int[] move : kingMove) {
+                    int x2 = x + move[0], y2 = y + move[1];
                     if (x2 < 8 && x2 > -1 && y2 < 8 && y2 > -1 && !piece.sameColor(boardInfo[x2][y2]))
                         validMap[x2][y2] = true;
                 }
@@ -100,59 +124,79 @@ public class ChessBoard {
     }
 
     void setValidRook(int x, int y) {
-        Chess piece = boardInfo[x][y];
-        int i;
         // Up
-        for (i = x - 1; i > 0 && boardInfo[x][i] == Chess.EM; --i)
-            validMap[i][y] = true;
-        if (Chess.EM != boardInfo[x][i] && !piece.sameColor(boardInfo[i][y]))
-            validMap[i][y] = true;
+        setValidStraightMove(n -> x - n, n -> y);
         // Down
-        for (i = x + 1; i < 7 && boardInfo[x][i] == Chess.EM; ++i)
-            validMap[i][y] = true;
-        if (Chess.EM != boardInfo[x][i] && !piece.sameColor(boardInfo[i][y]))
-            validMap[i][y] = true;
+        setValidStraightMove(n -> x + n, n -> y);
         // Left
-        for (i = y - 1; i > 0 && boardInfo[x][i] == Chess.EM; --i)
-            validMap[x][i] = true;
-        if (Chess.EM != boardInfo[x][i] && !piece.sameColor(boardInfo[x][i]))
-            validMap[x][i] = true;
+        setValidStraightMove(n -> x, n -> y - n);
         // Right
-        for (i = y + 1; i < 7 && boardInfo[x][i] == Chess.EM; ++i)
-            validMap[x][i] = true;
-        if (Chess.EM != boardInfo[x][i] && !piece.sameColor(boardInfo[x][i]))
-            validMap[x][i] = true;
+        setValidStraightMove(n -> x, n -> y + n);
     }
 
     void setValidBishop(int x, int y) {
-        for (int i = -7; i <= 7; ++i) {
-            int x2 = x - i, y2 = y - i;
-            if (x2 > -1 && y2 > -1 && x2 < 8 && y2 < 8)
-                validMap[x2][y2] = true;
-            y2 = y + i;
-            if (x2 > -1 && y2 > -1 && x2 < 8 && y2 < 8)
-                validMap[x2][y2] = true;
-        }
-    }
-
-    void setValidStraightMove(int x, int y, int dir, Function<Integer, Integer> calcX) {
-        for (int i = 1; x + i * dir < 7 && x + i * dir > 0 && boardInfo[x][i] == Chess.EM; ++i) {
-            validMap[calcX.apply(i)][calcX.apply(i)] = true;
-        }
-        if (Chess.EM != boardInfo[x][y] && !boardInfo[x][y].sameColor(boardInfo[x][y]));
+        // Up left
+        setValidStraightMove(n -> x - n, n -> y - n);
+        // Up right
+        setValidStraightMove(n -> x - n, n -> y + n);
+        // Down right
+        setValidStraightMove(n -> x + n, n -> y + n);
+        // Down left
+        setValidStraightMove(n -> x + n, n -> y - n);
     }
 
     /**
-     * Forcefully move a piece from a non-empty square to a position.
-     * Any piece in the targeted square will be captured.
-     * Does not perform any check
-     * @param row row of the moving piece
-     * @param col column of the moving piece
-     * @param newRow row of the new position
-     * @param newCol column of the new position
+     * Go along a path (functions) to set validMap for a chess piece,
+     * aka Black magic fuckery
+     * @param fx function to calculate row
+     * @param fy function to calculate column
      */
-    public void movePiece(int row, int col, int newRow, int newCol) {
-        boardInfo[newRow][newCol] = boardInfo[row][col];
-        boardInfo[row][col] = Chess.EM;
+    void setValidStraightMove(Function<Integer, Integer> fx, Function<Integer, Integer> fy) {
+        int i = 1;
+        int x = fx.apply(1), y = fy.apply(1);
+        while (x < 8 && x > -1 && y < 8 && y > -1 && boardInfo[x][y] == Chess.EM) {
+            validMap[x][y] = true;
+            ++i;
+            x = fx.apply(i);
+            y = fy.apply(i);
+        }
+
+        Chess og = boardInfo[fx.apply(0)][fy.apply(0)];
+        if (x < 8 && x > -1 && y < 8 && y > -1 && !og.sameColor(boardInfo[x][y]))
+            validMap[x][y] = true;
+    }
+
+    /**
+     * Move a piece from a non-empty square to a new valid position.
+     * If successfully moved, remove the chosen status
+     * @param x row of the new position
+     * @param y column of the new position
+     * @return true if the piece is successfully moved
+     */
+    public boolean moveChosenTo(int x, int y) {
+        if (!isValidMove(x, y))
+            return false;
+        if (chosenX == x && chosenY == y)
+            return false;
+        if (boardInfo[chosenX][chosenY] == Chess.EM)
+            return false;
+
+        boardInfo[x][y] = boardInfo[chosenX][chosenY];
+        boardInfo[chosenX][chosenY] = Chess.EM;
+        removeChosen();
+        return true;
+    }
+
+    /**
+     * Forcefully move a piece to a position (including empty squares).
+     * Does not perform any check
+     * @param x old row
+     * @param y old column
+     * @param x2 new row
+     * @param y2 new column
+     */
+    public void move(int x, int y, int x2, int y2) {
+        boardInfo[x][y] = boardInfo[x2][y2];
+        boardInfo[x][x] = Chess.EM;
     }
 }
