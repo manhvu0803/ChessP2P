@@ -1,24 +1,26 @@
 package com.example.chessp2p;
 
 public enum Chess {
-    WP(R.drawable.wpawn),
-    WR(R.drawable.wrook),
-    WN(R.drawable.wknight),
-    WB(R.drawable.wbishop),
-    WQ(R.drawable.wqueen),
-    WK(R.drawable.wking),
-    BP(R.drawable.bpawn),
-    BR(R.drawable.brook),
-    BN(R.drawable.bknight),
-    BB(R.drawable.bbishop),
-    BQ(R.drawable.bqueen),
-    BK(R.drawable.bking),
-    EM(-1);
+    WP(R.drawable.wpawn, ""),
+    WR(R.drawable.wrook, "R"),
+    WN(R.drawable.wknight, "N"),
+    WB(R.drawable.wbishop, "B"),
+    WQ(R.drawable.wqueen, "Q"),
+    WK(R.drawable.wking, "K"),
+    BP(R.drawable.bpawn, ""),
+    BR(R.drawable.brook, "R"),
+    BN(R.drawable.bknight, "N"),
+    BB(R.drawable.bbishop, "B"),
+    BQ(R.drawable.bqueen, "Q"),
+    BK(R.drawable.bking, "K"),
+    EM(-1, null);
 
     public final int bitmapId;
+    public final String str;
 
-    Chess(int id) {
+    Chess(int id, String signature) {
         bitmapId = id;
+        str = signature;
     }
 
     /**

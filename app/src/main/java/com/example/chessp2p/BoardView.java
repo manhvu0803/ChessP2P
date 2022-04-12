@@ -19,6 +19,12 @@ import java.util.Map;
 
 
 public class BoardView extends View implements View.OnTouchListener {
+    public interface OnMoveListener {
+        void OnMove(String move);
+    }
+
+    public OnMoveListener moveListener;
+
     ChessBoard board;
 
     Map<Chess, Bitmap> iconMap;
@@ -119,8 +125,10 @@ public class BoardView extends View implements View.OnTouchListener {
             cursorX = (int)event.getY() / canvasSize;
 
             if (board.hasChosen()) {
-                if (!board.moveChosenTo(cursorX, cursorY))
+                if (!board.moveChosenTo(cursorX, cursorY)) {
                     board.removeChosen();
+                    moveListener.OnMove(board.getLastMove());
+                }
                 cursorX = null;
                 cursorY = null;
             }

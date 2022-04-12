@@ -2,6 +2,8 @@ package com.example.chessp2p;
 
 import android.util.Log;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
+
 import java.util.Arrays;
 import java.util.function.Function;
 
@@ -21,17 +23,18 @@ public class ChessBoard {
     static final int[][] kingMove = { {-1, 0}, {-1, 1}, {0, 1}, {1, 1}, {1, 0}, {1, -1}, {0, -1}, {-1, -1} };
 
     // Board states
-    Chess[][] boardInfo;
+    Chess[][] board;
     boolean[][] validMap = new boolean[8][8]; // An array that represent valid move of the chosen piece
     int chosenX, chosenY;
     boolean hasChosen = false;
+    String lastMove;
 
     ChessBoard() {
-        boardInfo = Arrays.copyOf(startingBoard, startingBoard.length);
+        board = Arrays.copyOf(startingBoard, startingBoard.length);
     }
 
     Chess getPiece(int x, int y) {
-        return boardInfo[x][y];
+        return board[x][y];
     }
 
     public boolean isValidMove(int x, int y) {
@@ -45,7 +48,7 @@ public class ChessBoard {
     }
 
     public boolean hasChosen() {
-        return hasChosen && boardInfo[chosenX][chosenY] != Chess.EM;
+        return hasChosen && board[chosenX][chosenY] != Chess.EM;
     }
 
     /**
@@ -57,36 +60,42 @@ public class ChessBoard {
         hasChosen = false;
     }
 
+    // TODO: Checkmate check
+    /**
+     * Does not reset validMap
+     * @param x row
+     * @param y column
+     */
     public void setChosen(int x, int y) {
-        if (boardInfo[x][y] == Chess.EM)
+        if (board[x][y] == Chess.EM)
             return;
 
         chosenX = x;
         chosenY = y;
         hasChosen = true;
 
-        Chess piece = boardInfo[x][y];
-        switch (boardInfo[x][y]) {
+        Chess piece = board[x][y];
+        switch (board[x][y]) {
             case BP:
                 // TODO: Black en-passant
-                if (y > 0 && x < 7 && piece.differentColor(boardInfo[x + 1][y - 1]))
+                if (y > 0 && x < 7 && piece.differentColor(board[x + 1][y - 1]))
                     validMap[x + 1][y - 1] = true;
-                if (y < 7 && x < 7 && piece.differentColor(boardInfo[x + 1][y + 1]))
+                if (y < 7 && x < 7 && piece.differentColor(board[x + 1][y + 1]))
                     validMap[x + 1][y + 1] = true;
-                if (x < 7 && boardInfo[x + 1][y] == Chess.EM)
+                if (x < 7 && board[x + 1][y] == Chess.EM)
                     validMap[x + 1][y] = true;
-                if (x == 1 && boardInfo[x + 2][y] == Chess.EM)
+                if (x == 1 && board[x + 2][y] == Chess.EM)
                     validMap[x + 2][y] = true;
                 break;
             case WP:
                 // TODO: White en-passant
-                if (y > 0 && x > 0 && piece.differentColor(boardInfo[x - 1][y - 1]))
+                if (y > 0 && x > 0 && piece.differentColor(board[x - 1][y - 1]))
                     validMap[x - 1][y - 1] = true;
-                if (y < 7 && x > 0 && piece.differentColor(boardInfo[x - 1][y + 1]))
+                if (y < 7 && x > 0 && piece.differentColor(board[x - 1][y + 1]))
                     validMap[x - 1][y + 1] = true;
-                if (x > 0 && boardInfo[x - 1][y] == Chess.EM)
+                if (x > 0 && board[x - 1][y] == Chess.EM)
                     validMap[x - 1][y] = true;
-                if (x == 6 && boardInfo[x - 2][y] == Chess.EM)
+                if (x == 6 && board[x - 2][y] == Chess.EM)
                     validMap[x - 2][y] = true;
                 break;
             case BR:
@@ -97,7 +106,7 @@ public class ChessBoard {
             case WN:
                 for (int[] move : knightMove) {
                     int x2 = x + move[0], y2 = y + move[1];
-                    if (x2 < 8 && x2 > -1 && y2 < 8 && y2 > -1 && !piece.sameColor(boardInfo[x2][y2]))
+                    if (x2 < 8 && x2 > -1 && y2 < 8 && y2 > -1 && !piece.sameColor(board[x2][y2]))
                         validMap[x2][y2] = true;
                 }
                 break;
@@ -111,7 +120,7 @@ public class ChessBoard {
                 // TODO: Add white castling
                 for (int[] move : kingMove) {
                     int x2 = x + move[0], y2 = y + move[1];
-                    if (x2 < 8 && x2 > -1 && y2 < 8 && y2 > -1 && !piece.sameColor(boardInfo[x2][y2]))
+                    if (x2 < 8 && x2 > -1 && y2 < 8 && y2 > -1 && !piece.sameColor(board[x2][y2]))
                         validMap[x2][y2] = true;
                 }
                 break;
@@ -121,6 +130,10 @@ public class ChessBoard {
                 setValidBishop(x, y);
                 break;
         }
+    }
+
+    public String getLastMove() {
+        return lastMove;
     }
 
     void setValidRook(int x, int y) {
@@ -154,15 +167,15 @@ public class ChessBoard {
     void setValidStraightMove(Function<Integer, Integer> fx, Function<Integer, Integer> fy) {
         int i = 1;
         int x = fx.apply(1), y = fy.apply(1);
-        while (x < 8 && x > -1 && y < 8 && y > -1 && boardInfo[x][y] == Chess.EM) {
+        while (x < 8 && x > -1 && y < 8 && y > -1 && board[x][y] == Chess.EM) {
             validMap[x][y] = true;
             ++i;
             x = fx.apply(i);
             y = fy.apply(i);
         }
 
-        Chess og = boardInfo[fx.apply(0)][fy.apply(0)];
-        if (x < 8 && x > -1 && y < 8 && y > -1 && !og.sameColor(boardInfo[x][y]))
+        Chess og = board[fx.apply(0)][fy.apply(0)];
+        if (x < 8 && x > -1 && y < 8 && y > -1 && !og.sameColor(board[x][y]))
             validMap[x][y] = true;
     }
 
@@ -174,16 +187,57 @@ public class ChessBoard {
      * @return true if the piece is successfully moved
      */
     public boolean moveChosenTo(int x, int y) {
-        if (!isValidMove(x, y))
-            return false;
-        if (chosenX == x && chosenY == y)
-            return false;
-        if (boardInfo[chosenX][chosenY] == Chess.EM)
+        if (!hasChosen() || !isValidMove(x, y) || (chosenX == x && chosenY == y))
             return false;
 
-        boardInfo[x][y] = boardInfo[chosenX][chosenY];
-        boardInfo[chosenX][chosenY] = Chess.EM;
+        Chess chosen = board[chosenX][chosenY];
+        if (chosen == Chess.EM)
+            return false;
+
+        boolean capture = board[x][y] != Chess.EM;
+        board[x][y] = chosen;
+        board[chosenX][chosenY] = Chess.EM;
+
+        // Check for pieces that can reach the same position and king check
+        // Fuck you chess notation creator
+        // TODO: Checkmate notation
+        String oldRow = 8 - chosenX + "";
+        String oldCol= (char)(chosenY + 'a') + "";
+        boolean check = false, sameColumn = false, sameRow = false;
+        resetValidMap();
+        setChosen(x, y);
+        for (int i = 0; i < 8; ++i)
+            for (int j = 0; j < 8; ++j)
+                if (validMap[i][j]) {
+                    Chess p = board[i][j];
+                    if (p == chosen) {
+                        if (j == y)
+                            sameColumn = true;
+                        if (i == x)
+                            sameRow = true;
+                    }
+                    else if (p.differentColor(chosen) && (p == Chess.WK || p == Chess.BK))
+                        check = true;
+                }
+
+        // Update lastMove
+        lastMove = chosen.str;
+        if (sameRow)
+            lastMove += oldCol;
+        if (sameColumn)
+            lastMove += oldRow;
+        if (capture) {
+            if (chosen == Chess.BP || chosen == Chess.WP)
+                lastMove += oldCol;
+            lastMove += 'x';
+        }
+        lastMove += (char)(y + 'a') + String.valueOf(8 - x);
+        if (check)
+            lastMove += '+';
+        Log.d("Move", lastMove);
+
         removeChosen();
+
         return true;
     }
 
@@ -196,7 +250,7 @@ public class ChessBoard {
      * @param y2 new column
      */
     public void move(int x, int y, int x2, int y2) {
-        boardInfo[x][y] = boardInfo[x2][y2];
-        boardInfo[x][x] = Chess.EM;
+        board[x][y] = board[x2][y2];
+        board[x][x] = Chess.EM;
     }
 }
