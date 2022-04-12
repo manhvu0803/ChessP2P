@@ -51,21 +51,9 @@ public class BoardView extends View implements View.OnTouchListener {
 
         iconMap = new HashMap<>();
         Resources resource = context.getResources();
-        // Load chess piece bitmaps
-        {
-            iconMap.put(Chess.WP, BitmapFactory.decodeResource(resource, R.drawable.wpawn));
-            iconMap.put(Chess.WR, BitmapFactory.decodeResource(resource, R.drawable.wrook));
-            iconMap.put(Chess.WN, BitmapFactory.decodeResource(resource, R.drawable.wknight));
-            iconMap.put(Chess.WB, BitmapFactory.decodeResource(resource, R.drawable.wbishop));
-            iconMap.put(Chess.WQ, BitmapFactory.decodeResource(resource, R.drawable.wqueen));
-            iconMap.put(Chess.WK, BitmapFactory.decodeResource(resource, R.drawable.wking));
-            iconMap.put(Chess.BP, BitmapFactory.decodeResource(resource, R.drawable.bpawn));
-            iconMap.put(Chess.BR, BitmapFactory.decodeResource(resource, R.drawable.brook));
-            iconMap.put(Chess.BN, BitmapFactory.decodeResource(resource, R.drawable.bknight));
-            iconMap.put(Chess.BB, BitmapFactory.decodeResource(resource, R.drawable.bbishop));
-            iconMap.put(Chess.BQ, BitmapFactory.decodeResource(resource, R.drawable.bqueen));
-            iconMap.put(Chess.BK, BitmapFactory.decodeResource(resource, R.drawable.bking));
-        }
+        for (Chess chessPiece : Chess.values())
+            iconMap.put(chessPiece, BitmapFactory.decodeResource(resource, chessPiece.bitmapId));
+
         grayCircle = BitmapFactory.decodeResource(resource, R.drawable.gray_circle);
         hollowSquare = BitmapFactory.decodeResource(resource, R.drawable.hollow_square);
 

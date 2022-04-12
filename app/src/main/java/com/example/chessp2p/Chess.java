@@ -1,11 +1,25 @@
 package com.example.chessp2p;
 
-import android.util.Log;
-
 public enum Chess {
-    WP, WR, WN, WB, WQ, WK,
-    BP, BR, BN, BB, BQ, BK,
-    EM;
+    WP(R.drawable.wpawn),
+    WR(R.drawable.wrook),
+    WN(R.drawable.wknight),
+    WB(R.drawable.wbishop),
+    WQ(R.drawable.wqueen),
+    WK(R.drawable.wking),
+    BP(R.drawable.bpawn),
+    BR(R.drawable.brook),
+    BN(R.drawable.bknight),
+    BB(R.drawable.bbishop),
+    BQ(R.drawable.bqueen),
+    BK(R.drawable.bking),
+    EM(-1);
+
+    public final int bitmapId;
+
+    Chess(int id) {
+        bitmapId = id;
+    }
 
     /**
      *
@@ -13,15 +27,14 @@ public enum Chess {
      * @return true if the 2 pieces are the same color and not EM
      */
     public boolean sameColor(Chess piece) {
-        // ^ : XOR
         if (this == Chess.EM || piece == Chess.EM)
             return false;
-        return !(this.ordinal() < 6 ^ piece.ordinal() < 6);
+        return this.ordinal() < 6 == piece.ordinal() < 6;
     }
 
     /**
      *
-     * @param piece
+     * @param piece Chess piece to compare
      * @return true if the 2 pieces are different colors and not EM
      */
     public boolean differentColor(Chess piece) {
