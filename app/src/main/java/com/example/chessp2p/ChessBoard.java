@@ -27,6 +27,7 @@ public class ChessBoard {
     boolean[][] validMap = new boolean[8][8]; // An array that represent valid move of the chosen piece
     int chosenX, chosenY;
     boolean hasChosen = false;
+    Chess turnPlayer = Chess.WK; // Representing turn player with the king because it's convenient
     String lastMove;
 
     ChessBoard() {
@@ -39,6 +40,14 @@ public class ChessBoard {
 
     public String getLastMove() {
         return lastMove;
+    }
+
+    /**
+     *
+     * @return true if it's white turn
+     */
+    public boolean isWhiteTurn() {
+        return Chess.WK == turnPlayer;
     }
 
     public boolean isValidMove(int x, int y) {
@@ -65,7 +74,7 @@ public class ChessBoard {
      * @param y column
      */
     public void setChosen(int x, int y) {
-        if (board[x][y] == Chess.EM)
+        if (turnPlayer.differentColor(board[x][y]))
             return;
 
         chosenX = x;
@@ -249,6 +258,12 @@ public class ChessBoard {
         Log.d("Move", lastMove);
 
         removeChosen();
+
+        // swap turn player
+        if (turnPlayer == Chess.WK)
+            turnPlayer = Chess.BK;
+        else
+            turnPlayer = Chess.WK;
 
         return true;
     }
