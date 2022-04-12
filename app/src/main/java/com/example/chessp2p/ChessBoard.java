@@ -37,14 +37,12 @@ public class ChessBoard {
         return board[x][y];
     }
 
-    public boolean isValidMove(int x, int y) {
-        return validMap[x][y];
+    public String getLastMove() {
+        return lastMove;
     }
 
-    void resetValidMap() {
-        for (boolean[] ar : validMap)
-            for (int i = 0; i < 8; ++i)
-                ar[i] = false;
+    public boolean isValidMove(int x, int y) {
+        return validMap[x][y];
     }
 
     public boolean hasChosen() {
@@ -73,7 +71,16 @@ public class ChessBoard {
         chosenX = x;
         chosenY = y;
         hasChosen = true;
+        setValidMap(x, y, true);
+    }
 
+    void resetValidMap() {
+        for (boolean[] ar : validMap)
+            for (int i = 0; i < 8; ++i)
+                ar[i] = false;
+    }
+
+    void setValidMap(int x, int y, boolean checkSameColor) {
         Chess piece = board[x][y];
         switch (board[x][y]) {
             case BP:
@@ -100,19 +107,19 @@ public class ChessBoard {
                 break;
             case BR:
             case WR:
-                setValidRook(x, y);
+                setValidRook(x, y, checkSameColor);
                 break;
             case BN:
             case WN:
                 for (int[] move : knightMove) {
                     int x2 = x + move[0], y2 = y + move[1];
-                    if (x2 < 8 && x2 > -1 && y2 < 8 && y2 > -1 && !piece.sameColor(board[x2][y2]))
+                    if (x2 < 8 && x2 > -1 && y2 < 8 && y2 > -1 && (!piece.sameColor(board[x2][y2]) || !checkSameColor))
                         validMap[x2][y2] = true;
                 }
                 break;
             case BB:
             case WB:
-                setValidBishop(x, y);
+                setValidBishop(x, y, checkSameColor);
                 break;
             case BK:
                 // TODO: Add black castling
@@ -120,42 +127,38 @@ public class ChessBoard {
                 // TODO: Add white castling
                 for (int[] move : kingMove) {
                     int x2 = x + move[0], y2 = y + move[1];
-                    if (x2 < 8 && x2 > -1 && y2 < 8 && y2 > -1 && !piece.sameColor(board[x2][y2]))
+                    if (x2 < 8 && x2 > -1 && y2 < 8 && y2 > -1 && (!piece.sameColor(board[x2][y2]) || !checkSameColor))
                         validMap[x2][y2] = true;
                 }
                 break;
             case BQ:
             case WQ:
-                setValidRook(x, y);
-                setValidBishop(x, y);
+                setValidRook(x, y, checkSameColor);
+                setValidBishop(x, y, checkSameColor);
                 break;
         }
     }
 
-    public String getLastMove() {
-        return lastMove;
-    }
-
-    void setValidRook(int x, int y) {
+    void setValidRook(int x, int y, boolean checkSameColor) {
         // Up
-        setValidStraightMove(n -> x - n, n -> y);
+        setValidStraightMove(n -> x - n, n -> y, checkSameColor);
         // Down
-        setValidStraightMove(n -> x + n, n -> y);
+        setValidStraightMove(n -> x + n, n -> y, checkSameColor);
         // Left
-        setValidStraightMove(n -> x, n -> y - n);
+        setValidStraightMove(n -> x, n -> y - n, checkSameColor);
         // Right
-        setValidStraightMove(n -> x, n -> y + n);
+        setValidStraightMove(n -> x, n -> y + n, checkSameColor);
     }
 
-    void setValidBishop(int x, int y) {
+    void setValidBishop(int x, int y, boolean checkSameColor) {
         // Up left
-        setValidStraightMove(n -> x - n, n -> y - n);
+        setValidStraightMove(n -> x - n, n -> y - n, checkSameColor);
         // Up right
-        setValidStraightMove(n -> x - n, n -> y + n);
+        setValidStraightMove(n -> x - n, n -> y + n, checkSameColor);
         // Down right
-        setValidStraightMove(n -> x + n, n -> y + n);
+        setValidStraightMove(n -> x + n, n -> y + n, checkSameColor);
         // Down left
-        setValidStraightMove(n -> x + n, n -> y - n);
+        setValidStraightMove(n -> x + n, n -> y - n, checkSameColor);
     }
 
     /**
@@ -164,7 +167,7 @@ public class ChessBoard {
      * @param fx function to calculate row
      * @param fy function to calculate column
      */
-    void setValidStraightMove(Function<Integer, Integer> fx, Function<Integer, Integer> fy) {
+    void setValidStraightMove(Function<Integer, Integer> fx, Function<Integer, Integer> fy, boolean checkSameColor) {
         int i = 1;
         int x = fx.apply(1), y = fy.apply(1);
         while (x < 8 && x > -1 && y < 8 && y > -1 && board[x][y] == Chess.EM) {
@@ -175,8 +178,20 @@ public class ChessBoard {
         }
 
         Chess og = board[fx.apply(0)][fy.apply(0)];
-        if (x < 8 && x > -1 && y < 8 && y > -1 && !og.sameColor(board[x][y]))
+        if (x < 8 && x > -1 && y < 8 && y > -1 && (!og.sameColor(board[x][y]) || !checkSameColor))
             validMap[x][y] = true;
+    }
+
+    char toCol(int y) {
+        if (y < 0 || y > 7)
+            throw new IllegalArgumentException("");
+        return (char)(y + 'a');
+    }
+
+    char toRow(int x) {
+        if (x < 0 || x > 7)
+            throw new IllegalArgumentException("");
+        return (char)(8 - x + '0');
     }
 
     /**
@@ -201,20 +216,17 @@ public class ChessBoard {
         // Check for pieces that can reach the same position and king check
         // Fuck you chess notation creator
         // TODO: Checkmate notation
-        String oldRow = 8 - chosenX + "";
-        String oldCol= (char)(chosenY + 'a') + "";
-        boolean check = false, sameColumn = false, sameRow = false;
+        boolean check = false, dup = false, sameColumn = false;
         resetValidMap();
-        setChosen(x, y);
+        setValidMap(x, y, false);
         for (int i = 0; i < 8; ++i)
             for (int j = 0; j < 8; ++j)
                 if (validMap[i][j]) {
                     Chess p = board[i][j];
                     if (p == chosen) {
-                        if (j == y)
+                        dup = true;
+                        if (j == chosenY)
                             sameColumn = true;
-                        if (i == x)
-                            sameRow = true;
                     }
                     else if (p.differentColor(chosen) && (p == Chess.WK || p == Chess.BK))
                         check = true;
@@ -222,16 +234,16 @@ public class ChessBoard {
 
         // Update lastMove
         lastMove = chosen.str;
-        if (sameRow)
-            lastMove += oldCol;
-        if (sameColumn)
-            lastMove += oldRow;
+        if (dup && !sameColumn)
+            lastMove += toCol(chosenY);
+        else if (sameColumn)
+            lastMove += toRow(chosenX);
         if (capture) {
             if (chosen == Chess.BP || chosen == Chess.WP)
-                lastMove += oldCol;
+                lastMove += toCol(chosenY);
             lastMove += 'x';
         }
-        lastMove += (char)(y + 'a') + String.valueOf(8 - x);
+        lastMove += toCol(y) + "" + toRow(x);
         if (check)
             lastMove += '+';
         Log.d("Move", lastMove);

@@ -34,6 +34,7 @@ public class MainGame extends Activity {
 
         timerText = this.findViewById(R.id.timerText);
         boardView = this.findViewById(R.id.boardView);
+        TextView logTextView = this.findViewById(R.id.logTextView);
 
         Timer timer = new Timer();
         TimerTask task = new TimerTask() {
@@ -48,5 +49,7 @@ public class MainGame extends Activity {
             }
         };
         timer.scheduleAtFixedRate(task, 0, 1000);
+
+        boardView.onMoveListener = move -> logTextView.append(" " + move);
     }
 }

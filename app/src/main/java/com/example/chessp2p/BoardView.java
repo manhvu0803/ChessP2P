@@ -23,7 +23,7 @@ public class BoardView extends View implements View.OnTouchListener {
         void OnMove(String move);
     }
 
-    public OnMoveListener moveListener;
+    public OnMoveListener onMoveListener;
 
     ChessBoard board;
 
@@ -45,7 +45,6 @@ public class BoardView extends View implements View.OnTouchListener {
 
     public BoardView(Context context, AttributeSet attrSet) {
         super(context, attrSet);
-
         init(context);
     }
 
@@ -125,10 +124,10 @@ public class BoardView extends View implements View.OnTouchListener {
             cursorX = (int)event.getY() / canvasSize;
 
             if (board.hasChosen()) {
-                if (!board.moveChosenTo(cursorX, cursorY)) {
+                if (!board.moveChosenTo(cursorX, cursorY))
                     board.removeChosen();
-                    moveListener.OnMove(board.getLastMove());
-                }
+                else
+                    onMoveListener.OnMove(board.getLastMove());
                 cursorX = null;
                 cursorY = null;
             }
