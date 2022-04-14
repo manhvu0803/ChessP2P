@@ -10,7 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ChessP2P">
         <activity
-            android:name=".MainGame"
+            android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -18,7 +18,15 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name=".Setting"
+            android:exported="true">
+        </activity>
+        <activity
+            android:name=".Profile"
+            android:exported="true">
+        </activity>
+        <activity
+            android:name=".MainGame"
             android:exported="true">
         </activity>
     </application>
