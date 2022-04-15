@@ -23,4 +23,28 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editableBoardView" />
 
+    <Button
+        android:id="@+id/saveCustomButton"
+        android:layout_width="175dp"
+        android:layout_height="75dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="50dp"
+        android:text="Save"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/cancelButton"
+        android:layout_width="175dp"
+        android:layout_height="75dp"
+        android:layout_marginEnd="16dp"
+        android:text="cancel"
+        android:textSize="24sp"
+        android:textColor="@color/black"
+        style="?attr/materialButtonOutlinedStyle"
+        app:strokeWidth="2dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/saveCustomButton" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

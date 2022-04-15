@@ -16,7 +16,7 @@ public class MainGame extends Activity {
     TextView timerText;
     BoardView boardView;
 
-    int timeLeft = 20;
+    int timeLeft = 3600;
 
     final Handler handler = new Handler(Looper.getMainLooper());
     final Runnable updateTimerText = new Runnable() {

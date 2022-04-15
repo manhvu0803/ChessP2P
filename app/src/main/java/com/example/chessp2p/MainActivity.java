@@ -61,5 +61,10 @@ public class MainActivity extends Activity {
             }
         });
 
+        Button customButton = this.findViewById(R.id.customButton);
+        customButton.setOnClickListener(view -> {
+            Intent intent = new Intent(MainActivity.this, EditBoardActivity.class);
+            startActivity(intent);
+        });
     }
 }
