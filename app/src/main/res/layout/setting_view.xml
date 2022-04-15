@@ -81,16 +81,15 @@
 
     <ImageButton
         android:id="@+id/settingBack"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="25dp"
-        android:layout_marginBottom="25dp"
+        android:layout_width="133dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="16dp"
         android:backgroundTint="#00FFFFFF"
-        android:visibility="visible"
+        android:src="@drawable/ic_baseline_arrow_back"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/ic_baseline_arrow_back_24"
-        app:tint="#000000"
+        app:srcCompat="@drawable/ic_baseline_arrow_back"
         tools:ignore="SpeakableTextPresentCheck" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

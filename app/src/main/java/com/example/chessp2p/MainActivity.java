@@ -46,6 +46,13 @@ public class MainActivity extends Activity {
             }
         });
 
+        puzzleBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent Puzzle = new Intent(MainActivity.this, com.example.chessp2p.Puzzle.class);
+                startActivity(Puzzle);            }
+        });
+
         profile.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {

@@ -1,7 +1,6 @@
 package com.example.chessp2p;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -30,9 +29,7 @@ public class Setting extends Activity{
         back.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                Intent Setting = new Intent(Setting.this, com.example.chessp2p.MainActivity.class);
                 finish();
-                startActivity(Setting);
             }
         });
     }
