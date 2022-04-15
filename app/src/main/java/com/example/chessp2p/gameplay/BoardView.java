@@ -1,4 +1,4 @@
-package com.example.chessp2p;
+package com.example.chessp2p.gameplay;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -12,7 +12,10 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.content.res.AppCompatResources;
+
+import com.example.chessp2p.R;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,7 +31,7 @@ public class BoardView extends View implements View.OnTouchListener {
     ChessBoard board;
 
     Map<Chess, Bitmap> iconMap;
-    Bitmap grayCircle, hollowSquare;
+    Bitmap hollowSquare;
 
     int canvasSize;
     Canvas canvas;
@@ -48,18 +51,24 @@ public class BoardView extends View implements View.OnTouchListener {
         init(context);
     }
 
-    void init(@NonNull Context context) {
-        //TypedArray tArr = context.getTheme().obtainStyledAttributes(attrSet, R.styleable.BoardView, Chess.EM, 0);
-        //tArr.recycle();
+    public BoardView(Context context, AttributeSet attrSet, int styleId) {
+        super(context, attrSet, styleId);
+        init(context);
+    }
 
-        board = new ChessBoard();
+    public BoardView(Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+        super(context, attrs, defStyleAttr, defStyleRes);
+        init(context);
+    }
+
+    private void init(@NonNull Context context) {
+        setBoard();
 
         iconMap = new HashMap<>();
         Resources resource = context.getResources();
         for (Chess chessPiece : Chess.values())
             iconMap.put(chessPiece, BitmapFactory.decodeResource(resource, chessPiece.bitmapId));
 
-        grayCircle = BitmapFactory.decodeResource(resource, R.drawable.gray_circle);
         hollowSquare = BitmapFactory.decodeResource(resource, R.drawable.hollow_square);
 
         setBackground(AppCompatResources.getDrawable(context, R.drawable.board));
@@ -87,13 +96,6 @@ public class BoardView extends View implements View.OnTouchListener {
         if (cursorX != null) {
             draw(hollowSquare, cursorX, cursorY, -5);
         }
-        // Draw the possible moves
-        if (board.hasChosen()) {
-            for (int i = 0; i < 8; ++i)
-                for (int j = 0; j < 8; ++j)
-                    if (board.isValidMove(i, j))
-                        draw(grayCircle, i, j, 40);
-        }
     }
 
     void draw(Bitmap bitmap, int x, int y, int pad) {
@@ -120,23 +122,19 @@ public class BoardView extends View implements View.OnTouchListener {
     public boolean onTouch(View view, MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_UP) {
             // The canvas coordinates is column-row instead of row-column
-            cursorY = (int)event.getX() / canvasSize;
-            cursorX = (int)event.getY() / canvasSize;
-
-            if (board.hasChosen()) {
-                if (!board.moveChosenTo(cursorX, cursorY))
-                    board.removeChosen();
-                else
-                    onMoveListener.OnMove(board.getLastMove());
-                cursorX = null;
-                cursorY = null;
-            }
-            else if (board.getPiece(cursorX, cursorY) != Chess.EM)
-                board.setChosen(cursorX, cursorY);
-
-             invalidate();
+            setCursor(event);
+            invalidate();
         }
 
         return true;
+    }
+
+    protected void setBoard() {
+        board = new ChessBoard();
+    }
+
+    protected void setCursor(MotionEvent event) {
+        cursorY = (int)event.getX() / canvasSize;
+        cursorX = (int)event.getY() / canvasSize;
     }
 }

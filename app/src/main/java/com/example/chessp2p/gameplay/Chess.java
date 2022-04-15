@@ -1,4 +1,6 @@
-package com.example.chessp2p;
+package com.example.chessp2p.gameplay;
+
+import com.example.chessp2p.R;
 
 public enum Chess {
     WP(R.drawable.wpawn, ""),

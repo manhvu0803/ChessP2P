@@ -1,24 +1,11 @@
-package com.example.chessp2p;
+package com.example.chessp2p.gameplay;
 
 import android.util.Log;
-
-import androidx.constraintlayout.widget.ConstraintLayout;
 
 import java.util.Arrays;
 import java.util.function.Function;
 
 public class ChessBoard {
-    static final Chess[][] startingBoard = {
-            {Chess.BR, Chess.BN, Chess.BB, Chess.BQ, Chess.BK, Chess.BB, Chess.BN, Chess.BR},
-            {Chess.BP, Chess.BP, Chess.BP, Chess.BP, Chess.BP, Chess.BP, Chess.BP, Chess.BP},
-            {Chess.EM, Chess.EM, Chess.EM, Chess.EM, Chess.EM, Chess.EM, Chess.EM, Chess.EM},
-            {Chess.EM, Chess.EM, Chess.EM, Chess.EM, Chess.EM, Chess.EM, Chess.EM, Chess.EM},
-            {Chess.EM, Chess.EM, Chess.EM, Chess.EM, Chess.EM, Chess.EM, Chess.EM, Chess.EM},
-            {Chess.EM, Chess.EM, Chess.EM, Chess.EM, Chess.EM, Chess.EM, Chess.EM, Chess.EM},
-            {Chess.WP, Chess.WP, Chess.WP, Chess.WP, Chess.WP, Chess.WP, Chess.WP, Chess.WP},
-            {Chess.WR, Chess.WN, Chess.WB, Chess.WQ, Chess.WK, Chess.WB, Chess.WN, Chess.WR}
-    };
-
     static final int[][] knightMove = { {-2, -1}, {-2, 1}, {-1, 2}, {1, 2}, {2, 1}, {2, -1}, {1, -2}, {-1, -2} };
     static final int[][] kingMove = { {-1, 0}, {-1, 1}, {0, 1}, {1, 1}, {1, 0}, {1, -1}, {0, -1}, {-1, -1} };
 
@@ -31,7 +18,22 @@ public class ChessBoard {
     String lastMove;
 
     ChessBoard() {
-        board = Arrays.copyOf(startingBoard, startingBoard.length);
+        board = new Chess[][] {
+            {Chess.BR, Chess.BN, Chess.BB, Chess.BQ, Chess.BK, Chess.BB, Chess.BN, Chess.BR},
+            {Chess.BP, Chess.BP, Chess.BP, Chess.BP, Chess.BP, Chess.BP, Chess.BP, Chess.BP},
+            {Chess.EM, Chess.EM, Chess.EM, Chess.EM, Chess.EM, Chess.EM, Chess.EM, Chess.EM},
+            {Chess.EM, Chess.EM, Chess.EM, Chess.EM, Chess.EM, Chess.EM, Chess.EM, Chess.EM},
+            {Chess.EM, Chess.EM, Chess.EM, Chess.EM, Chess.EM, Chess.EM, Chess.EM, Chess.EM},
+            {Chess.EM, Chess.EM, Chess.EM, Chess.EM, Chess.EM, Chess.EM, Chess.EM, Chess.EM},
+            {Chess.WP, Chess.WP, Chess.WP, Chess.WP, Chess.WP, Chess.WP, Chess.WP, Chess.WP},
+            {Chess.WR, Chess.WN, Chess.WB, Chess.WQ, Chess.WK, Chess.WB, Chess.WN, Chess.WR}
+        };
+    }
+
+    ChessBoard(Chess[][] board) {
+        if (board.length != 8 || board[0].length != 8)
+            throw new IllegalArgumentException("Input chess board size must be 8 by 8");
+        this.board = board;
     }
 
     Chess getPiece(int x, int y) {
@@ -255,7 +257,6 @@ public class ChessBoard {
         lastMove += toCol(y) + "" + toRow(x);
         if (check)
             lastMove += '+';
-        Log.d("Move", lastMove);
 
         removeChosen();
 
@@ -266,6 +267,16 @@ public class ChessBoard {
             turnPlayer = Chess.WK;
 
         return true;
+    }
+
+    /**
+     * Forcefully overwrite a position
+     * @param x row
+     * @param y col
+     * @param piece Chess piece to set
+     */
+    public void setPiece(int x, int y, Chess piece) {
+        board[x][y] = piece;
     }
 
     /**
