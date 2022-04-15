@@ -6,6 +6,8 @@ import android.os.Handler;
 import android.os.Looper;
 import android.widget.TextView;
 
+import com.example.chessp2p.gameplay.BoardView;
+
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -33,7 +35,7 @@ public class MainGame extends Activity {
         setContentView(R.layout.activity_main_game);
 
         timerText = this.findViewById(R.id.timerText);
-        boardView = this.findViewById(R.id.boardView);
+        boardView = this.findViewById(R.id.playingBoardView);
         TextView logTextView = this.findViewById(R.id.logTextView);
 
         Timer timer = new Timer();
