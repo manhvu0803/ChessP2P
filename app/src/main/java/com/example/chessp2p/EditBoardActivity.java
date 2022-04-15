@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Spinner;
 
 import com.example.chessp2p.gameplay.Chess;
@@ -21,6 +22,7 @@ public class EditBoardActivity extends AppCompatActivity implements AdapterView.
                             Chess.BK, Chess.BQ, Chess.BR, Chess.BB, Chess.BN, Chess.BP};
 
     EditableBoardView boardView;
+    Button cancelButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +35,15 @@ public class EditBoardActivity extends AppCompatActivity implements AdapterView.
         Spinner spinner = this.findViewById(R.id.chessPieceSpinner);
         spinner.setAdapter(new ArrayAdapter<>(this, R.layout.spinner_item, pieceStrings));
         spinner.setOnItemSelectedListener(this);
+
+        cancelButton = this.findViewById(R.id.cancelButton);
+
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
     @Override

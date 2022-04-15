@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/CodingBase/Mobile/ChessP2P/app/src/main/res/layout/activity_edit_board.xml" value="0.23703703703703705" />
         <entry key="..\:/Dev/Android/ChessP2P/app/src/main/res/layout/activity_main_game.xml" value="0.33" />
         <entry key="..\:/Dev/Android/ChessP2P/app/src/main/res/layout/board_view.xml" value="0.1" />
         <entry key="..\:/Users/user/AppData/Local/Android/Sdk/platforms/android-32/data/res/layout/simple_spinner_dropdown_item.xml" value="0.14130434782608695" />
@@ -23,7 +24,7 @@
     </option>
   </component>
   <component name="ExternalStorageConfigurationManager" enabled="true" />
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_16" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_16" project-jdk-name="16" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">
