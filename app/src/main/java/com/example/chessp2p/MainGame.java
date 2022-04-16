@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.chessp2p.gameplay.BoardView;
@@ -17,6 +18,7 @@ public class MainGame extends Activity {
     BoardView boardView;
 
     int timeLeft = 3600;
+    boolean isWhite = true;
 
     final Handler handler = new Handler(Looper.getMainLooper());
     final Runnable updateTimerText = new Runnable() {
@@ -36,7 +38,9 @@ public class MainGame extends Activity {
 
         timerText = this.findViewById(R.id.timerText);
         boardView = this.findViewById(R.id.playingBoardView);
-        TextView logTextView = this.findViewById(R.id.logTextView);
+        TextView logWhiteTextView = this.findViewById(R.id.logWhiteTextView);
+        TextView logBlackTextView = this.findViewById(R.id.logBlackTextView);
+
 
         Timer timer = new Timer();
         TimerTask task = new TimerTask() {
@@ -52,6 +56,12 @@ public class MainGame extends Activity {
         };
         timer.scheduleAtFixedRate(task, 0, 1000);
 
-        boardView.onMoveListener = move -> logTextView.append(" " + move);
+        boardView.onMoveListener = move -> {
+            if (isWhite)
+                logWhiteTextView.append("\n" + move);
+            else
+                logBlackTextView.append("\n" + move);
+            isWhite = !isWhite;
+        };
     }
 }
