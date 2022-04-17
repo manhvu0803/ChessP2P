@@ -24,17 +24,21 @@ public class MainGame extends Activity {
     PlayingBoardView boardView;
 
     MediaPlayer effect,background;
-    int timeLeft = 3600;
+    int whiteTimeLeft = 15;
+    int blackTimeLeft = 15;
     boolean isWhite = true;
 
     final Handler handler = new Handler(Looper.getMainLooper());
     final Runnable updateTimerText = new Runnable() {
         @Override
         public void run() {
-            String str = timeLeft / 60 + ":" + timeLeft % 60;
-            if (timeLeft <= 0)
-                str = "Done";
-            timerText.setText(str);
+            if (isWhite) {
+                timerText.setText(String.format("%02d:%02d", whiteTimeLeft / 60, whiteTimeLeft % 60));
+            } else {
+                timerText.setText(String.format("%02d:%02d", blackTimeLeft / 60, blackTimeLeft % 60));
+            }
+            if (whiteTimeLeft <= 0 || blackTimeLeft <= 0)
+                timerText.setText("Done");
         }
     };
 
@@ -78,12 +82,16 @@ public class MainGame extends Activity {
         TimerTask task = new TimerTask() {
             @Override
             public void run() {
-                if (timeLeft <= 0) {
+                if (whiteTimeLeft <= 0 || blackTimeLeft <= 0) {
                     timer.cancel();
                     return;
                 }
                 handler.post(updateTimerText);
-                timeLeft -= 1;
+                if (isWhite) {
+                    whiteTimeLeft--;
+                } else {
+                    blackTimeLeft--;
+                }
             }
         };
         timer.scheduleAtFixedRate(task, 0, 1000);
