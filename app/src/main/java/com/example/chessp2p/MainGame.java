@@ -3,18 +3,20 @@ package com.example.chessp2p;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.InputType;
 import android.widget.Button;
-import android.widget.ImageView;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.chessp2p.gameplay.BoardView;
 import com.example.chessp2p.gameplay.PlayingBoardView;
 
+import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -26,19 +28,19 @@ public class MainGame extends Activity {
     MediaPlayer effect,background;
     int whiteTimeLeft = 15;
     int blackTimeLeft = 15;
+    boolean isTimerSet = false;
     boolean isWhite = true;
 
     final Handler handler = new Handler(Looper.getMainLooper());
     final Runnable updateTimerText = new Runnable() {
         @Override
         public void run() {
-            if (isWhite) {
-                timerText.setText(String.format("%02d:%02d", whiteTimeLeft / 60, whiteTimeLeft % 60));
-            } else {
-                timerText.setText(String.format("%02d:%02d", blackTimeLeft / 60, blackTimeLeft % 60));
-            }
+            if (isWhite)
+                timerText.setText(String.format(Locale.US, "%02d:%02d", whiteTimeLeft / 60, whiteTimeLeft % 60));
+            else
+                timerText.setText(String.format(Locale.US, "%02d:%02d", blackTimeLeft / 60, blackTimeLeft % 60));
             if (whiteTimeLeft <= 0 || blackTimeLeft <= 0)
-                timerText.setText("Done");
+                timerText.setText(R.string.finish_timer);
         }
     };
 
@@ -57,6 +59,26 @@ public class MainGame extends Activity {
             background.stop();
         }
 
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        alert.setTitle("Set time for each player (in seconds)");
+        final EditText input = new EditText(this);
+        input.setInputType(InputType.TYPE_CLASS_NUMBER);
+        input.setRawInputType(Configuration.KEYBOARD_12KEY);
+        alert.setView(input);
+        alert.setPositiveButton("Set", (dialog, whichButton) -> {
+            String value = input.getText().toString();
+            if(value.equals(""))
+            {
+                Toast.makeText(getApplicationContext(), "Please enter a number", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            whiteTimeLeft = blackTimeLeft = Integer.parseInt(value) + 1;
+            isTimerSet = true;
+            Toast.makeText(getApplicationContext(), "Game start!", Toast.LENGTH_SHORT).show();
+        });
+        alert.setNegativeButton("Cancel", (dialog, whichButton) -> finish());
+        alert.show();
+
         timerText = this.findViewById(R.id.timerText);
         boardView = this.findViewById(R.id.playingBoardView);
         TextView logWhiteTextView = this.findViewById(R.id.logWhiteTextView);
@@ -74,9 +96,7 @@ public class MainGame extends Activity {
             boardView.redo();
         });
 
-        boardView.setGameEndListener((isWhiteWin, isCheckmate) -> {
-            MainGame.this.EndGame(isWhiteWin);
-        });
+        boardView.setGameEndListener((isWhiteWin, isCheckmate) -> MainGame.this.EndGame(isWhiteWin));
 
         Timer timer = new Timer();
         TimerTask task = new TimerTask() {
@@ -87,9 +107,9 @@ public class MainGame extends Activity {
                     return;
                 }
                 handler.post(updateTimerText);
-                if (isWhite) {
+                if (isWhite && isTimerSet) {
                     whiteTimeLeft--;
-                } else {
+                } else if (isTimerSet){
                     blackTimeLeft--;
                 }
             }

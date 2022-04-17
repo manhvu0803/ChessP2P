@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">ChessP2P</string>
     <string name="edit_board">Custom chessboard</string>
+    <string name="finish_timer">Done</string>
     <string-array name="theme">
         <item>Classic 1</item>
         <item>Classic 2</item>
