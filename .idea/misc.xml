@@ -10,7 +10,8 @@
         <entry key="..\:/Users/user/Desktop/Mobile/Project/app/src/main/res/drawable/ic_baseline_menu_book_24.xml" value="0.111" />
         <entry key="..\:/Users/user/Desktop/Mobile/Project/app/src/main/res/drawable/ic_human.xml" value="0.1785" />
         <entry key="..\:/Users/user/Desktop/Mobile/Project/app/src/main/res/drawable/ic_trophy.xml" value="0.111" />
-        <entry key="..\:/Users/user/Desktop/Mobile/Project/app/src/main/res/layout/activity_main.xml" value="0.16666666666666666" />
+        <entry key="..\:/Users/user/Desktop/Mobile/Project/app/src/main/res/layout/activity_main.xml" value="0.1" />
+        <entry key="..\:/Users/user/Desktop/Mobile/Project/app/src/main/res/layout/activity_main_game.xml" value="0.1" />
         <entry key="..\:/Users/user/Desktop/Mobile/Project/app/src/main/res/layout/profile_view.xml" value="0.16666666666666666" />
         <entry key="..\:/Users/user/Desktop/Mobile/Project/app/src/main/res/layout/puzzle_view.xml" value="0.165625" />
         <entry key="..\:/Users/user/Desktop/Mobile/Project/app/src/main/res/layout/setting_view.xml" value="0.1" />
@@ -19,10 +20,17 @@
     </option>
   </component>
   <component name="ExternalStorageConfigurationManager" enabled="true" />
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_X" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_16" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">
     <option name="id" value="Android" />
+  </component>
+  <component name="VisualizationToolProject">
+    <option name="state">
+      <ProjectState>
+        <option name="scale" value="0.1" />
+      </ProjectState>
+    </option>
   </component>
 </project>
