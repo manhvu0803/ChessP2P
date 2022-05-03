@@ -89,9 +89,15 @@ public class PlayingBoardView extends BoardView {
 
     public void undo() {
         board.undo();
+        invalidate();
     }
 
     public void redo() {
         board.redo();
+        invalidate();
+    }
+
+    public void setGameEndListener(ChessBoard.GameEndListener listener) {
+        board.gameEndListener = listener;
     }
 }

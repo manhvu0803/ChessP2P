@@ -9,9 +9,15 @@ import java.util.Stack;
 import java.util.function.Function;
 
 public class ChessBoard {
+    public interface GameEndListener {
+        public void onGameEnd(boolean isWhiteWin, boolean isCheckmate);
+    }
 
     static final int[][] knightMove = { {-2, -1}, {-2, 1}, {-1, 2}, {1, 2}, {2, 1}, {2, -1}, {1, -2}, {-1, -2} };
     static final int[][] kingMove = { {-1, 0}, {-1, 1}, {0, 1}, {1, 1}, {1, 0}, {1, -1}, {0, -1}, {-1, -1} };
+
+    // Listeners
+    public GameEndListener gameEndListener;
 
     // Board states
     Chess[][] board;
@@ -258,6 +264,36 @@ public class ChessBoard {
         removeChosen();
 
         swapTurnPlayer();
+
+        // Check game end
+        if (gameEndListener != null) {
+            boolean isWhiteWin = turnPlayer.sameColor(Chess.WK);
+            if (builder.capturedPiece == Chess.BK || builder.capturedPiece == Chess.WK)
+                gameEndListener.onGameEnd(isWhiteWin, false);
+            else if (builder.check && checkmate())
+                gameEndListener.onGameEnd(isWhiteWin, true);
+        }
+
+        return true;
+    }
+
+    private boolean checkmate() {
+        resetValidMap();
+
+        int kx = 0, ky = 0;
+
+        for (int i = 0; i < 8; ++i)
+            for (int j = 0; j < 8; ++j)
+                if (board[i][j].sameColor(turnPlayer))
+                    setValidMap(i, j, false);
+                else if (board[i][j] == Chess.BK || board[i][j] == Chess.WK) {
+                    kx = i;
+                    ky = j;
+                }
+
+        for (int[] move : kingMove)
+            if (!validMap[kx + move[0]][ky + move[1]])
+                return false;
 
         return true;
     }

@@ -1,6 +1,8 @@
 package com.example.chessp2p;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -45,12 +47,18 @@ public class MainGame extends Activity {
 
         Button undoButton = this.findViewById(R.id.undoButton);
         undoButton.setOnClickListener((view) -> {
+            isWhite = !isWhite;
             boardView.undo();
         });
 
         Button redoButton = this.findViewById(R.id.redoButton);
         redoButton.setOnClickListener((view) -> {
+            isWhite = !isWhite;
             boardView.redo();
+        });
+
+        boardView.setGameEndListener((isWhiteWin, isCheckmate) -> {
+            MainGame.this.EndGame(isWhiteWin);
         });
 
         Timer timer = new Timer();
@@ -74,5 +82,15 @@ public class MainGame extends Activity {
                 logBlackTextView.append("\n" + move);
             isWhite = !isWhite;
         };
+    }
+
+    void EndGame(boolean isWhiteWin) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage((isWhiteWin)? "White win" : "Black win");
+        builder.setPositiveButton("OK", (dialog, id) -> {
+            Intent intent = new Intent(this, MainActivity.class);
+            MainGame.this.startActivity(intent);
+        });
+        builder.show();
     }
 }
