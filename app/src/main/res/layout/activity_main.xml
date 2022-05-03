@@ -4,12 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/background"
+    android:backgroundTint="#59C3C3C3"
+    android:backgroundTintMode="screen"
     tools:context=".MainActivity">
 
     <Button
         android:id="@+id/puzzle"
         android:layout_width="200dp"
-        android:layout_height="55dp"
+        android:layout_height="75dp"
         android:layout_marginStart="105dp"
         android:layout_marginTop="20dp"
         android:layout_marginEnd="106dp"
@@ -17,42 +20,39 @@
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/setting" />
 
     <ImageView
         android:id="@+id/Logo"
-        android:layout_width="238dp"
+        android:layout_width="0dp"
         android:layout_height="195dp"
         android:layout_marginStart="48dp"
         android:layout_marginTop="56dp"
         android:layout_marginEnd="48dp"
         android:src="@drawable/logo"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.493"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/play"
         android:layout_width="200dp"
-        android:layout_height="55dp"
+        android:layout_height="75dp"
         android:layout_marginStart="105dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="75dp"
         android:layout_marginEnd="106dp"
         android:text="Play"
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/Logo" />
 
     <Button
         android:id="@+id/setting"
         android:layout_width="200dp"
-        android:layout_height="55dp"
+        android:layout_height="75dp"
         android:layout_marginStart="105dp"
         android:layout_marginTop="20dp"
         android:layout_marginEnd="106dp"
@@ -60,7 +60,6 @@
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/play" />
 
@@ -81,7 +80,7 @@
     <Button
         android:id="@+id/customButton"
         android:layout_width="200dp"
-        android:layout_height="55dp"
+        android:layout_height="75dp"
         android:layout_marginStart="105dp"
         android:layout_marginTop="20dp"
         android:layout_marginEnd="106dp"
@@ -89,7 +88,6 @@
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/puzzle" />
 
