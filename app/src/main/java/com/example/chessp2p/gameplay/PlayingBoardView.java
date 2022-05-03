@@ -86,4 +86,12 @@ public class PlayingBoardView extends BoardView {
 
         return true;
     }
+
+    public void undo() {
+        board.undo();
+    }
+
+    public void redo() {
+        board.redo();
+    }
 }

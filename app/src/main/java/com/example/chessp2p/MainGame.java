@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -42,6 +43,15 @@ public class MainGame extends Activity {
         TextView logWhiteTextView = this.findViewById(R.id.logWhiteTextView);
         TextView logBlackTextView = this.findViewById(R.id.logBlackTextView);
 
+        Button undoButton = this.findViewById(R.id.undoButton);
+        undoButton.setOnClickListener((view) -> {
+            boardView.undo();
+        });
+
+        Button redoButton = this.findViewById(R.id.redoButton);
+        redoButton.setOnClickListener((view) -> {
+            boardView.redo();
+        });
 
         Timer timer = new Timer();
         TimerTask task = new TimerTask() {

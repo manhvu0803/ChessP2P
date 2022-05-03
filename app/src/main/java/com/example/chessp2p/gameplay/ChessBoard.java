@@ -22,6 +22,7 @@ public class ChessBoard {
     Chess turnPlayer = Chess.WK; // Representing turn player with the king because it's convenient
 
     Stack<Move> moveStack = new Stack<>();
+    Stack<Move> redoStack = new Stack<>();
 
     ChessBoard() {
         board = new Chess[][] {
@@ -250,15 +251,48 @@ public class ChessBoard {
                         builder.check = true;
                 }
 
+        // Update the move stacks
+        redoStack = new Stack<>();
         moveStack.push(builder.build());
 
         removeChosen();
 
-        // swap turn player
+        swapTurnPlayer();
+
+        return true;
+    }
+
+    private void swapTurnPlayer() {
         if (turnPlayer == Chess.WK)
             turnPlayer = Chess.BK;
         else
             turnPlayer = Chess.WK;
+    }
+
+    public boolean undo() {
+        if (moveStack.empty())
+            return false;
+
+        removeChosen();
+
+        Move move = moveStack.pop();
+        board[move.x1][move.y1] = board[move.x2][move.y2];
+        if (move.capturedPiece != null)
+            board[move.x2][move.y2] = move.capturedPiece;
+        redoStack.push(move);
+        swapTurnPlayer();
+
+        return true;
+    }
+
+    public boolean redo() {
+        if (redoStack.empty())
+            return false;
+
+        Move move = redoStack.pop();
+        board[move.x2][move.y2] = board[move.x1][move.y1];
+        moveStack.push(move);
+        swapTurnPlayer();
 
         return true;
     }
