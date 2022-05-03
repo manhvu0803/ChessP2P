@@ -2,7 +2,10 @@ package com.example.chessp2p.gameplay;
 
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import java.util.Arrays;
+import java.util.Stack;
 import java.util.function.Function;
 
 public class ChessBoard {
@@ -13,10 +16,12 @@ public class ChessBoard {
     // Board states
     Chess[][] board;
     boolean[][] validMap = new boolean[8][8]; // An array that represent valid move of the chosen piece
+
     int chosenX, chosenY;
     boolean hasChosen = false;
     Chess turnPlayer = Chess.WK; // Representing turn player with the king because it's convenient
-    String lastMove;
+
+    Stack<Move> moveStack = new Stack<>();
 
     ChessBoard() {
         board = new Chess[][] {
@@ -31,7 +36,7 @@ public class ChessBoard {
         };
     }
 
-    ChessBoard(Chess[][] board) {
+    ChessBoard(@NonNull Chess[][] board) {
         if (board.length != 8 || board[0].length != 8)
             throw new IllegalArgumentException("Input chess board size must be 8 by 8");
         this.board = board;
@@ -41,8 +46,8 @@ public class ChessBoard {
         return board[x][y];
     }
 
-    public String getLastMove() {
-        return lastMove;
+    public Move getLastMove() {
+        return moveStack.peek();
     }
 
     /**
@@ -57,8 +62,15 @@ public class ChessBoard {
         return validMap[x][y];
     }
 
-    public boolean hasChosen() {
-        return hasChosen && board[chosenX][chosenY] != Chess.EM;
+    /**
+     *
+     * @return Chosen piece or Chess.EM
+     */
+    public Chess getChosen() {
+        if (hasChosen)
+            return board[chosenX][chosenY];
+
+        return Chess.EM;
     }
 
     /**
@@ -194,18 +206,6 @@ public class ChessBoard {
             validMap[x][y] = true;
     }
 
-    char toCol(int y) {
-        if (y < 0 || y > 7)
-            throw new IllegalArgumentException("");
-        return (char)(y + 'a');
-    }
-
-    char toRow(int x) {
-        if (x < 0 || x > 7)
-            throw new IllegalArgumentException("");
-        return (char)(8 - x + '0');
-    }
-
     /**
      * Move a piece from a non-empty square to a new valid position.
      * If successfully moved, remove the chosen status
@@ -214,50 +214,43 @@ public class ChessBoard {
      * @return true if the piece is successfully moved
      */
     public boolean moveChosenTo(int x, int y) {
-        if (!hasChosen() || !isValidMove(x, y) || (chosenX == x && chosenY == y))
+        if (!isValidMove(x, y) || (chosenX == x && chosenY == y))
             return false;
 
-        Chess chosen = board[chosenX][chosenY];
-        if (chosen == Chess.EM)
+        Chess chosen = getChosen();
+        if (chosen == Chess.EM || chosen == null)
             return false;
 
-        boolean capture = board[x][y] != Chess.EM;
+        // Check for pieces that can reach the same position and king check and update last move
+        // Fuck you chess notation creator
+        // TODO: Checkmate notation
+        Move.Builder builder = new Move.Builder();
+        builder.setPositions(chosenX, chosenY, x, y);
+        builder.chosenPiece = chosen;
+        builder.capturedPiece = board[x][y];
+
+        // Replace the pieces
         board[x][y] = chosen;
         board[chosenX][chosenY] = Chess.EM;
 
-        // Check for pieces that can reach the same position and king check
-        // Fuck you chess notation creator
-        // TODO: Checkmate notation
-        boolean check = false, dup = false, sameColumn = false;
         resetValidMap();
         setValidMap(x, y, false);
         for (int i = 0; i < 8; ++i)
             for (int j = 0; j < 8; ++j)
                 if (validMap[i][j]) {
                     Chess p = board[i][j];
+                    if (p == Chess.EM)
+                        continue;
                     if (p == chosen) {
-                        dup = true;
+                        builder.haveDuplicate = true;
                         if (j == chosenY)
-                            sameColumn = true;
+                            builder.duplicateSameColumn = true;
                     }
                     else if (p.differentColor(chosen) && (p == Chess.WK || p == Chess.BK))
-                        check = true;
+                        builder.check = true;
                 }
 
-        // Update lastMove
-        lastMove = chosen.str;
-        if (dup && !sameColumn)
-            lastMove += toCol(chosenY);
-        else if (sameColumn)
-            lastMove += toRow(chosenX);
-        if (capture) {
-            if (chosen == Chess.BP || chosen == Chess.WP)
-                lastMove += toCol(chosenY);
-            lastMove += 'x';
-        }
-        lastMove += toCol(y) + "" + toRow(x);
-        if (check)
-            lastMove += '+';
+        moveStack.push(builder.build());
 
         removeChosen();
 
@@ -281,6 +274,7 @@ public class ChessBoard {
     }
 
     /**
+     * Avoid using this function if setChosen and moveChosenTo are usable
      * Forcefully move a piece to a position (including empty squares).
      * Does not perform any check
      * @param x old row

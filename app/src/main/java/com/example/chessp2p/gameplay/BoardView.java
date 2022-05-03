@@ -22,12 +22,6 @@ import java.util.Map;
 
 
 public class BoardView extends View implements View.OnTouchListener {
-    public interface OnMoveListener {
-        void OnMove(String move);
-    }
-
-    public OnMoveListener onMoveListener;
-
     ChessBoard board;
 
     Map<Chess, Bitmap> iconMap;

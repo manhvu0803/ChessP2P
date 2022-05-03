@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.chessp2p.gameplay.BoardView;
+import com.example.chessp2p.gameplay.PlayingBoardView;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -15,7 +16,7 @@ import java.util.TimerTask;
 
 public class MainGame extends Activity {
     TextView timerText;
-    BoardView boardView;
+    PlayingBoardView boardView;
 
     int timeLeft = 3600;
     boolean isWhite = true;
@@ -56,7 +57,7 @@ public class MainGame extends Activity {
         };
         timer.scheduleAtFixedRate(task, 0, 1000);
 
-        boardView.onMoveListener = move -> {
+        boardView.onMoveListener = (move, x1, y1, x2, y2) -> {
             if (isWhite)
                 logWhiteTextView.append("\n" + move);
             else
