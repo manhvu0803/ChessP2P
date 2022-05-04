@@ -9,9 +9,7 @@ import android.widget.ArrayAdapter;
 
 import android.widget.ImageButton;
 import android.widget.Spinner;
-import android.widget.Toast;
 
-import androidx.appcompat.content.res.AppCompatResources;
 
 public class Setting extends Activity{
 

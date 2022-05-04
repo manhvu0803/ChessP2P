@@ -22,7 +22,7 @@ public class MainGame extends Activity {
     TextView timerText;
     PlayingBoardView boardView;
 
-    MediaPlayer effect;
+    MediaPlayer effect,background;
     int timeLeft = 3600;
     boolean isWhite = true;
 
@@ -42,6 +42,9 @@ public class MainGame extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_game);
         effect = MediaPlayer.create(this, R.raw.move);
+        background = MediaPlayer.create(this,R.raw.background);
+        background.setLooping(true);
+        background.start();
 
 
         timerText = this.findViewById(R.id.timerText);
@@ -97,5 +100,24 @@ public class MainGame extends Activity {
             MainGame.this.startActivity(intent);
         });
         builder.show();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        background.pause();
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        background.start();
+        background.seekTo(0);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        background.stop();
     }
 }

@@ -79,7 +79,15 @@ public class MainActivity extends Activity {
 
     private void loadSharedPreferenced(){
         SharedPreferences sharedPreferences = getSharedPreferences(UserSetting.PREFERENCES,MODE_PRIVATE);
+
         String theme = sharedPreferences.getString(UserSetting.CUSTOM_THEME,UserSetting.THEME_1);
+
+        String sound = sharedPreferences.getString(UserSetting.BACKGROUNDSTATUS,"on");
+
+        String effect = sharedPreferences.getString(UserSetting.BACKGROUNDSTATUS,"on");
+
         setting.setCustomTheme(theme);
+        setting.setBackgroundMusic(sound);
+        setting.setSoundEffect(effect);
     }
 }
