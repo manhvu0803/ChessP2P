@@ -7,7 +7,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -15,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.content.res.AppCompatResources;
 
+import com.example.chessp2p.MainActivity;
 import com.example.chessp2p.R;
 
 import java.util.HashMap;
@@ -65,7 +65,20 @@ public class BoardView extends View implements View.OnTouchListener {
 
         hollowSquare = BitmapFactory.decodeResource(resource, R.drawable.hollow_square);
 
-        setBackground(AppCompatResources.getDrawable(context, R.drawable.board));
+        switch (MainActivity.setting.getCustomTheme()){
+            case "Classic 1":
+                setBackground(AppCompatResources.getDrawable(context, R.drawable.classic_1));
+                break;
+            case "Classic 2":
+                setBackground(AppCompatResources.getDrawable(context, R.drawable.classic_2));
+                break;
+            case "Advance 1":
+                setBackground(AppCompatResources.getDrawable(context, R.drawable.advance_1));
+                break;
+            case "Advance 2":
+                setBackground(AppCompatResources.getDrawable(context, R.drawable.advance_2));
+                break;
+        }
 
         this.setOnTouchListener(this);
     }

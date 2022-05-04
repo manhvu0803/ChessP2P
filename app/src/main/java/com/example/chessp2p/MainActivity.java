@@ -2,6 +2,7 @@ package com.example.chessp2p;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -17,10 +18,14 @@ public class MainActivity extends Activity {
     Button settingBtn;
     Button puzzleBtn;
 
+    public static UserSetting setting;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        setting = (UserSetting) getApplication();
 
         playBtn =(Button) findViewById(R.id.play);
         settingBtn =(Button) findViewById(R.id.setting);
@@ -66,5 +71,14 @@ public class MainActivity extends Activity {
             Intent intent = new Intent(MainActivity.this, EditBoardActivity.class);
             startActivity(intent);
         });
+
+        loadSharedPreferenced();
+
+    }
+
+    private void loadSharedPreferenced(){
+        SharedPreferences sharedPreferences = getSharedPreferences(UserSetting.PREFERENCES,MODE_PRIVATE);
+        String theme = sharedPreferences.getString(UserSetting.CUSTOM_THEME,UserSetting.THEME_1);
+        setting.setCustomTheme(theme);
     }
 }

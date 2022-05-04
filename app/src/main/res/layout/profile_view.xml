@@ -31,7 +31,9 @@
         android:layout_marginEnd="159dp"
         android:layout_marginBottom="50dp"
         android:text="Name"
+        android:textColor="#FFFFFF"
         android:textSize="30sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/textView2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -45,35 +47,35 @@
         android:layout_marginTop="50dp"
         android:layout_marginEnd="159dp"
         android:text="Theme"
+        android:textColor="#FFFFFF"
         android:textSize="30sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/pro_name" />
 
     <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="287dp"
-        android:layout_height="237dp"
+        android:id="@+id/boardImage"
+        android:layout_width="0dp"
+        android:layout_height="300dp"
         android:layout_marginStart="45dp"
         android:layout_marginTop="28dp"
         android:layout_marginEnd="45dp"
-        android:src="@drawable/board"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView2"
-        app:srcCompat="@drawable/board" />
+        app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
     <Button
         android:id="@+id/logoutBtn"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="160dp"
+        android:layout_marginStart="120dp"
         android:layout_marginTop="68dp"
-        android:layout_marginEnd="160dp"
+        android:layout_marginEnd="120dp"
         android:text="LOG OUT"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+        app:layout_constraintTop_toBottomOf="@+id/boardImage" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
