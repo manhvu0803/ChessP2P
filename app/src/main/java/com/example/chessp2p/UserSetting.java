@@ -10,6 +10,7 @@ public class UserSetting extends Application {
     public static final String BACKGROUNDSTATUS = "backgroundStatus";
     public static final String EFFECTSTATUS = "effectStatus";
 
+    public static final String THEME_0 = "Default";
     public static final String THEME_1 = "Classic 1";
     public static final String THEME_2 = "Classic 2";
     public static final String THEME_3 = "Advance 1";

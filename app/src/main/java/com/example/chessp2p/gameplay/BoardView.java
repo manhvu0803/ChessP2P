@@ -66,6 +66,9 @@ public class BoardView extends View implements View.OnTouchListener {
         hollowSquare = BitmapFactory.decodeResource(resource, R.drawable.hollow_square);
 
         switch (MainActivity.setting.getCustomTheme()){
+            case "Default":
+                setBackground(AppCompatResources.getDrawable(context, R.drawable.default_board));
+                break;
             case "Classic 1":
                 setBackground(AppCompatResources.getDrawable(context, R.drawable.classic_1));
                 break;

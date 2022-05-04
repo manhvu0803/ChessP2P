@@ -3,6 +3,7 @@
     <string name="edit_board">Custom chessboard</string>
     <string name="finish_timer">Done</string>
     <string-array name="theme">
+        <item>Default</item>
         <item>Classic 1</item>
         <item>Classic 2</item>
         <item>Advance 1</item>
