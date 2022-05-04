@@ -28,7 +28,7 @@
             android:layout_marginStart="24dp"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
-            android:src="@drawable/hourglass"
+            android:src="@drawable/hourglass_bottom"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/undoButton"
             app:layout_constraintTop_toTopOf="parent"
@@ -40,7 +40,6 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
             android:layout_marginTop="12dp"
-            android:text="hello"
             android:textAlignment="center"
             android:textColor="@color/black"
             android:textSize="34sp"
@@ -51,12 +50,10 @@
             android:id="@+id/redoButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
             android:layout_marginEnd="8dp"
             android:text="Redo"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/timerText"
             app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -103,6 +100,16 @@
                 android:textSize="20sp" />
         </ScrollView>
 
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="5dp"
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp"
+            android:background="?android:attr/listDivider"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
         <ScrollView
             android:id="@+id/scrollView3"
             android:layout_width="0dp"
@@ -124,6 +131,7 @@
                 android:textColor="@color/black"
                 android:textSize="20sp" />
         </ScrollView>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </LinearLayout>

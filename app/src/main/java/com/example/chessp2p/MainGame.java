@@ -26,8 +26,8 @@ public class MainGame extends Activity {
     PlayingBoardView boardView;
 
     MediaPlayer effect,background;
-    int whiteTimeLeft = 15;
-    int blackTimeLeft = 15;
+    int whiteTimeLeft = 0;
+    int blackTimeLeft = 0;
     boolean isTimerSet = false;
     boolean isWhite = true;
 
