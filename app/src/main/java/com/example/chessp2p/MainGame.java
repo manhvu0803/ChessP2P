@@ -10,6 +10,7 @@ import android.os.Looper;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.chessp2p.gameplay.BoardView;
 import com.example.chessp2p.gameplay.PlayingBoardView;
@@ -43,8 +44,12 @@ public class MainGame extends Activity {
         setContentView(R.layout.activity_main_game);
         effect = MediaPlayer.create(this, R.raw.move);
         background = MediaPlayer.create(this,R.raw.background);
-        background.setLooping(true);
-        background.start();
+        if(MainActivity.setting.getBackgroundMusic().equals("on"))
+        {
+            Toast.makeText(this,MainActivity.setting.getBackgroundMusic(),Toast.LENGTH_SHORT).show();
+            background.setLooping(true);
+            background.start();
+        }
 
 
         timerText = this.findViewById(R.id.timerText);
@@ -83,7 +88,8 @@ public class MainGame extends Activity {
         timer.scheduleAtFixedRate(task, 0, 1000);
 
         boardView.onMoveListener = (move, x1, y1, x2, y2) -> {
-            effect.start();
+            if(MainActivity.setting.getSoundEffect().equals("on"))
+                effect.start();
             if (isWhite)
                 logWhiteTextView.append("\n" + move);
             else
@@ -111,8 +117,11 @@ public class MainGame extends Activity {
     @Override
     protected void onResume(){
         super.onResume();
-        background.start();
-        background.seekTo(0);
+        if(MainActivity.setting.getBackgroundMusic().equals("on"));
+        {
+            background.start();
+            background.seekTo(0);
+        }
     }
 
     @Override
