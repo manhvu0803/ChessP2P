@@ -2,6 +2,7 @@ package com.example.chessp2p;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -12,12 +13,12 @@ import com.example.chessp2p.gameplay.Chess;
 import com.example.chessp2p.gameplay.EditableBoardView;
 
 public class EditBoardActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
-    static final String[] pieceStrings = {"None",
-                            "White King", "White Rook", "White Knight", "White Bishop", "White Queen", "White Pawn",
-                            "Black King", "Black Rook", "Black Knight", "Black Bishop", "Black Queen", "Black Pawn"};
+    static final String[] pieceStrings = {"Choose chess piece",
+                            "♔ White King", "♕ White Queen", "♖ White Rook", "♗ White Bishop", "♘ White Knight", "♙ White Pawn",
+                            "♚ Black King", "♛ Black Queen", "♜ Black Rook", "♝ Black Bishop", "♞ Black Knight", "♟ Black Pawn"};
     static final Chess[] pieces = {Chess.EM,
-                            Chess.WK, Chess.WR, Chess.WN, Chess.WB, Chess.WQ, Chess.WP,
-                            Chess.BK, Chess.BR, Chess.BN, Chess.BB, Chess.BQ, Chess.BP};
+                            Chess.WK, Chess.WQ, Chess.WR, Chess.WB, Chess.WN, Chess.WP,
+                            Chess.BK, Chess.BQ, Chess.BR, Chess.BB, Chess.BN, Chess.BP};
 
     EditableBoardView boardView;
 

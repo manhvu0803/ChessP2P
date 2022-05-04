@@ -59,17 +59,17 @@ public class ExecutableActivity extends AppCompatActivity {
         }
     }
 
-    void createExeFile() {
-        Context context = getApplicationContext();
-        try (InputStream inputStream = context.getResources().openRawResource(R.raw.stockfish);
-             FileOutputStream fileStream = context.openFileOutput("stockfish", Context.MODE_PRIVATE)) {
-            byte[] buffer = new byte[inputStream.available()];
-            int res = inputStream.read(buffer);
-            fileStream.write(buffer);
-            Log.d("exe", "created exe");
-        }
-        catch (Exception e) {
-            Log.e("exe", "Create: " + e.getLocalizedMessage());
-        }
-    }
+//    void createExeFile() {
+//        Context context = getApplicationContext();
+//        try (InputStream inputStream = context.getResources().openRawResource(R.raw.stockfish);
+//             FileOutputStream fileStream = context.openFileOutput("stockfish", Context.MODE_PRIVATE)) {
+//            byte[] buffer = new byte[inputStream.available()];
+//            int res = inputStream.read(buffer);
+//            fileStream.write(buffer);
+//            Log.d("exe", "created exe");
+//        }
+//        catch (Exception e) {
+//            Log.e("exe", "Create: " + e.getLocalizedMessage());
+//        }
+//    }
 }

@@ -74,3 +74,5 @@ fastlane/readme.md
 # Example files
 app/src/test/java/com/example/chessp2p/ExampleUnitTest.java
 app/src/androidTest/java/com/example/chessp2p/ExampleInstrumentedTest.java
+.idea/compiler.xml
+.idea/misc.xml
