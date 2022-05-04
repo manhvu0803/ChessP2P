@@ -37,6 +37,24 @@ public class Setting extends Activity{
         backgroundSwitch = (Switch) findViewById(R.id.music);
         effectSwitch = (Switch) findViewById(R.id.music2);
 
+        if(MainActivity.setting.getBackgroundMusic().equals("on")){
+            backgroundSwitch.setChecked(true);
+            backgroundStatus.setText("On");
+        }
+        else{
+            backgroundSwitch.setChecked(false);
+            backgroundStatus.setText("Off");
+        }
+
+        if(MainActivity.setting.getSoundEffect().equals("on")){
+            effectSwitch.setChecked(true);
+            effectStatus.setText("On");
+        }
+        else{
+            effectSwitch.setChecked(false);
+            effectStatus.setText("Off");
+        }
+
         backgroundSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {

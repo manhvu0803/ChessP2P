@@ -46,11 +46,12 @@ public class MainGame extends Activity {
         background = MediaPlayer.create(this,R.raw.background);
         if(MainActivity.setting.getBackgroundMusic().equals("on"))
         {
-            Toast.makeText(this,MainActivity.setting.getBackgroundMusic(),Toast.LENGTH_SHORT).show();
             background.setLooping(true);
             background.start();
         }
-
+        else{
+            background.stop();
+        }
 
         timerText = this.findViewById(R.id.timerText);
         boardView = this.findViewById(R.id.playingBoardView);
@@ -111,13 +112,14 @@ public class MainGame extends Activity {
     @Override
     protected void onPause() {
         super.onPause();
-        background.pause();
+        if(MainActivity.setting.getBackgroundMusic().equals("on"))
+            background.pause();
     }
 
     @Override
     protected void onResume(){
         super.onResume();
-        if(MainActivity.setting.getBackgroundMusic().equals("on"));
+        if(MainActivity.setting.getBackgroundMusic().equals("on"))
         {
             background.start();
             background.seekTo(0);
@@ -127,6 +129,7 @@ public class MainGame extends Activity {
     @Override
     protected void onStop() {
         super.onStop();
-        background.stop();
+        if(MainActivity.setting.getBackgroundMusic().equals("on"))
+            background.stop();
     }
 }
