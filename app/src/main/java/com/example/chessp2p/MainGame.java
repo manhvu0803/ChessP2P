@@ -3,6 +3,7 @@ package com.example.chessp2p;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -21,6 +22,7 @@ public class MainGame extends Activity {
     TextView timerText;
     PlayingBoardView boardView;
 
+    MediaPlayer effect;
     int timeLeft = 3600;
     boolean isWhite = true;
 
@@ -39,6 +41,8 @@ public class MainGame extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_game);
+        effect = MediaPlayer.create(this, R.raw.move);
+
 
         timerText = this.findViewById(R.id.timerText);
         boardView = this.findViewById(R.id.playingBoardView);
@@ -76,6 +80,7 @@ public class MainGame extends Activity {
         timer.scheduleAtFixedRate(task, 0, 1000);
 
         boardView.onMoveListener = (move, x1, y1, x2, y2) -> {
+            effect.start();
             if (isWhite)
                 logWhiteTextView.append("\n" + move);
             else

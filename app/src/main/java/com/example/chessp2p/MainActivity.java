@@ -18,6 +18,7 @@ public class MainActivity extends Activity {
     Button settingBtn;
     Button puzzleBtn;
 
+
     public static UserSetting setting;
 
     @Override
